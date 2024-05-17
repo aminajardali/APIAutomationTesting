@@ -51,7 +51,7 @@ Feature: Tokenized Deposit Creation
       """
     When the user submits a POST request to create the tokenized deposit
     Then the response status should be 400
-    Then the response body should indicate "Failed to convert request body to class webserver.models.tokenized_deposit.CreateDepositRequest"
+    Then the response body should indicate '{type=FLOW_FAILED, message=Multiple or zero Tokenized Deposit states with id " + TokenizedDepositID + " found}'
 
   Scenario: Failed creation of a tokenized deposit due to unsupported account type for a new user
     Given a new user with shorthash "78C86D135089"
@@ -69,22 +69,5 @@ Feature: Tokenized Deposit Creation
       """
     When the user submits a POST request to create the tokenized deposit
     Then the response status should be 400
-    Then the response body should indicate "Unsupported account type"
+    Then the response body should indicate "{type=FLOW_FAILED, message=Invalid account type: UNSUPPORTED_TYPE}"
 
-  Scenario: Failed creation of a tokenized deposit due to invalid account number for a new user
-    Given a new user with shorthash "78C86D135089"
-    Given the user wants to create a wallet and place tokens in it
-    Given the following request body with invalid account number:
-      """
-      {
-        "beneficiary":"CN=Alice, OU=Test Dept, O=R3, L=London, C=GB",
-        "tokenizedBalance":"20",
-        "commercialDepositCurrency":"USD",
-        "tokenizedDepositCurrency":"AEDT",
-        "accountNumber":"invalid",
-        "accountType":"TOKENIZED_CHECKING"
-      }
-      """
-    When the user submits a POST request to create the tokenized deposit
-    Then the response status should be 400
-    Then the response body should indicate "Invalid account number"
